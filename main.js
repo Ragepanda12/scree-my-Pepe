@@ -8,7 +8,7 @@ var rafID = null;
 window.onload = function() {
 
     // grab our canvas
-    canvasContext = document.getElementById( "meter" ).getContext("2d");
+    //canvasContext = document.getElementById( "meter" ).getContext("2d");
     
     // monkeypatch Web Audio
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -65,8 +65,8 @@ function gotStream(stream) {
     var mainState = {
         preload: function() { 
             // Load the bird sprite
-            game.load.image('bird', 'assets/bird.png'); 
-            game.load.image('pipe', 'assets/pipe.png');
+            game.load.image('bird', 'assets/smolAngryTransparent.png'); 
+            game.load.image('pipe', 'assets/smolPepe.jpg');
         },
 
         create: function() { 
@@ -101,24 +101,34 @@ function gotStream(stream) {
         },
 
         update: function() {
-            if (meter.volume*100 > 15){
+/*            if (meter.volume*100 > 15){
+                this.bird.body.gravity.y = -1000;
                 this.jump();
             }
+            else{*/
+            if(this.bird.alive == true)
+                this.bird.body.gravity.y = 1000 - meter.volume * 10000;
+//            }
+            else
+                this.bird.body.gravity.y = 1000;
+document.getElementById("target").innerHTML = meter.volume * 10000;
             // If the bird is out of the screen (too high or too low)
             // Call the 'restartGame' function
             if (this.bird.y < 0 || this.bird.y > 490)
                 this.restartGame();
             game.physics.arcade.overlap(
                 this.bird, this.pipes, this.hitPipe, null, this);  
-            if (this.bird.angle < 20)
+            if (this.bird.angle < 20 && this.bird.body.gravity.y > 0)
                 this.bird.angle += 1; 
+            else if(this.bird.angle > -20 && this.bird.body.gravity.y < 0)
+                this.bird.angle -= 1;
         },
         // Make the bird jump 
         jump: function() {
             if (this.bird.alive == false)
                 return;  
             // Add a vertical velocity to the bird
-            this.bird.body.velocity.y = -350;
+            //this.bird.body.velocity.y = -350;
             // Create an animation on the bird
             var animation = game.add.tween(this.bird);
             // Change the angle of the bird to -20° in 100 milliseconds
