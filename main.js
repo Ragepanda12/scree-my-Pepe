@@ -65,8 +65,8 @@ function gotStream(stream) {
     var mainState = {
         preload: function() { 
             // Load the bird sprite
-            game.load.image('bird', 'assets/smolAngryTransparent.png'); 
-            game.load.image('pipe', 'assets/smolPepe.jpg');
+            game.load.image('bird', 'assets/transparentAngry.png'); 
+            game.load.image('pipe', 'assets/pepe.jpg');
         },
 
         create: function() { 
@@ -74,7 +74,7 @@ function gotStream(stream) {
             this.labelScore = game.add.text(20, 20, "0", 
                 { font: "30px Arial", fill: "#ffffff" });  
 
-            this.timer = game.time.events.loop(1500, this.addRowOfPipes, this); 
+            this.timer = game.time.events.loop(1500*((window.innerHeight)/400), this.addRowOfPipes, this); 
             this.pipes = game.add.group();
             // Change the background color of the game to blue
             game.stage.backgroundColor = '#71c5cf';
@@ -84,7 +84,8 @@ function gotStream(stream) {
 
             // Display the bird at the position x=100 and y=245
             this.bird = game.add.sprite(100, 245, 'bird');
-
+            this.bird.width = window.innerHeight/8;
+            this.bird.height = window.innerHeight/8;
             // Add physics to the bird
             // Needed for: movements, gravity, collisions, etc.
             game.physics.arcade.enable(this.bird);
@@ -111,10 +112,10 @@ function gotStream(stream) {
 //            }
             else
                 this.bird.body.gravity.y = 1000;
-document.getElementById("target").innerHTML = meter.volume * 10000;
+//document.getElementById("target").innerHTML = meter.volume * 10000;
             // If the bird is out of the screen (too high or too low)
             // Call the 'restartGame' function
-            if (this.bird.y < 0 || this.bird.y > 490)
+            if (this.bird.y < 0 || this.bird.y > window.innerHeight)
                 this.restartGame();
             game.physics.arcade.overlap(
                 this.bird, this.pipes, this.hitPipe, null, this);  
@@ -147,7 +148,8 @@ document.getElementById("target").innerHTML = meter.volume * 10000;
         addOnePipe: function(x, y) {
             // Create a pipe at the position x and y
             var pipe = game.add.sprite(x, y, 'pipe');
-
+            pipe.width = window.innerHeight/10;
+            pipe.height = window.innerHeight/10;
             // Add the pipe to our previously created group
             this.pipes.add(pipe);
 
@@ -170,7 +172,7 @@ document.getElementById("target").innerHTML = meter.volume * 10000;
             // With one big hole at position 'hole' and 'hole + 1'
             for (var i = 0; i < 8; i++)
                 if (i != hole && i != hole + 1) 
-                    this.addOnePipe(400, i * 60 + 10);  
+                    this.addOnePipe(window.innerHeight*1.2, i * window.innerHeight/8 + 10);  
             this.score += 1;
             this.labelScore.text = this.score; 
         },
@@ -195,7 +197,7 @@ document.getElementById("target").innerHTML = meter.volume * 10000;
     };
 
     // Initialize Phaser, and create a 400px by 490px game
-    var game = new Phaser.Game(400, 490);
+    var game = new Phaser.Game(window.innerHeight*1.2, window.innerHeight);
 
     // Add the 'mainState' and call it 'main'
     game.state.add('main', mainState); 
@@ -221,4 +223,15 @@ document.getElementById("target").innerHTML = meter.volume * 10000;
     // set up the next visual callback
     rafID = window.requestAnimationFrame( drawLoop );
 }*/
+
+
+/**
+ * fullscreenify()
+ * Stretch canvas to size of window.
+ *
+ * Zachary Johnson
+ * http://www.zachstronaut.com/
+ *
+ * See also: https://gist.github.com/1178522
+ */
 
